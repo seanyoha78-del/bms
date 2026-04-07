@@ -1,0 +1,250 @@
+:root {
+    --primary-blue: #003366;
+    --sidebar-width: 250px;
+    --white: #ffffff;
+    --light-bg: #f8f9fa;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light-bg);
+}
+
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--primary-blue);
+    color: var(--white);
+    padding-top: 20px;
+}
+
+.sidebar h4 {
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+}
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    padding: 15px 25px;
+    border-radius: 0;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.main-content {
+    margin-left: var(--sidebar-width);
+    padding: 30px;
+}
+
+.card-stats {
+    border: none;
+    border-left: 5px solid var(--primary-blue);
+    transition: transform 0.3s;
+}
+
+.card-stats:hover {
+    transform: translateY(-5px);
+}
+
+.btn-primary-custom {
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+}
+
+.btn-primary-custom:hover {
+    background-color: #002244;
+    color: white;
+}
+
+.text-blue {
+    color: var(--primary-blue);
+}
+
+.navbar-custom {
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px 30px;
+}
+
+/* Login Page Styles */
+.login-body {
+    background: linear-gradient(135deg, #003366 0%, #0055aa 100%);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* resident table */
+/* Table style */
+.table thead th {
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.table tbody td {
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+/* Book image */
+.book-img {
+    width: 40px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 8px;
+}
+
+/* Status badges */
+.badge-available {
+    background: #28a745;
+}
+
+.badge-overdue {
+    background: #dc3545;
+}
+
+.badge-borrowed {
+    background: #ffc107;
+    color: #000;
+}
+
+/* Action buttons */
+.action-btn {
+    width: 35px;
+    height: 35px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+}
+
+/* Container box */
+.card-box {
+    margin-left: -9%;
+    width: 90%;
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.containers {
+    width: 1600px;
+    margin-left: 15%;
+}
+
+.badge-pending {
+    background: #ffc107;
+    color: #000;
+}
+
+.badge-ongoing {
+    background: #0d6efd;
+}
+
+.badge-resolved {
+    background: #28a745;
+}
+
+.badge-income {
+    background: #28a745;
+}
+
+.badge-expense {
+    background: #dc3545;
+}
+
+.box {
+    width: 1000px;
+    margin: auto;
+    background: #fff;
+    padding: 40px;
+    border: 2px solid #000;
+}
+
+@media print {
+    .no-print {
+        display: none;
+    }
+}
+
+.space {
+    width: 50%;
+    margin-left: 20%;
+}
+
+.nav-link.active {
+    background: #0d6efd;
+    border-radius: 8px;
+}
+
+.nav-link.active i {
+    color: #fff;
+}
+
+/* CSS rules for printing */
+@media print {
+    body * {
+        visibility: hidden;
+        /* Hide all elements by default */
+    }
+
+    #printableArea,
+    #printableArea * {
+        visibility: visible;
+        /* Make the target div and its children visible */
+    }
+
+    #printableArea {
+        position: absolute;
+        /* Position the printable area at the top left */
+        left: 0;
+        top: 0;
+    }
+}
+
+.voucher{
+    background:#fff;
+    padding:20px;
+    border:2px solid #000;
+    max-width:900px;
+    margin:auto;
+}
+
+.voucher h4{
+    text-align:center;
+    font-weight:bold;
+    letter-spacing:2px;
+}
+
+.table-bordereds td, .table-bordereds th{
+    border:1px solid #000 !important;
+    font-size:13px;
+}
+
+.small-text{
+    font-size:12px;
+}
+
+.signature{
+    height:70px;
+}
