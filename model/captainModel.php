@@ -29,6 +29,17 @@ class captainModel
         ]);
     }
 
+    function updatePosition($id, $status)
+    {
+       $sql = "UPDATE barangay_official SET position = :status WHERE official_id = :id";
+        $stmt = $this->conn->prepare($sql);
+
+        return $stmt->execute([
+            ':status' => $status,
+            ':id' => $id
+        ]);
+    }
+
     function updateTermStatus($id, $status)
     {
         // if setting to CURRENT
@@ -47,6 +58,16 @@ class captainModel
         ]);
     }
 
+     function deleteOfficial($id)
+    {
+        $sql = "DELETE FROM barangay_official WHERE official_id = :id";
+        $stmt = $this->conn->prepare($sql);
+
+        return $stmt->execute([
+            ':id' => $id
+        ]);
+    }
+    
     function deleteTerm($id)
     {
         $sql = "DELETE FROM term WHERE term_id = :id";

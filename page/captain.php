@@ -68,7 +68,7 @@ class Captain
 		include '../views/captain.php';
 	}
 
-	function program()
+	function reports()
 	{
 		include '../views/kagawad.php';
 	}
@@ -85,9 +85,29 @@ class Captain
 		include '../views/captain.php';
 	}
 
+	function header()
+	{
+		include '../views/captain.php';
+	}
+
 	function profile()
 	{
 		include '../views/captain.php';
+	}
+
+	function finance()
+	{
+		include '../views/treasurer.php';
+	}
+
+	function report()
+	{
+		include '../views/sk_kagawad.php';
+	}
+
+	function funds()
+	{
+		include '../views/sk_kagawad.php';
 	}
 }
 
@@ -150,6 +170,43 @@ class ActiveCaptain
 		exit();
 	}
 
+	function updatePosition()
+	{
+		$id = $_POST['official_id'];
+		$status = $_POST['position'];
+
+		if ($this->captainModel->updatePosition($id, $status)) {
+
+			$_SESSION['message'] = "Status updated successfully!";
+			$_SESSION['msg_type'] = "success";
+		} else {
+
+			$_SESSION['message'] = "Failed to update status!";
+			$_SESSION['msg_type'] = "danger";
+		}
+
+		header("Location: ../page/captain.php?subpage=monitor");
+		exit();
+	}
+
+	function deleteOfficial()
+	{
+		$id = $_GET['id'];
+
+		if ($this->captainModel->deleteOfficial($id)) {
+
+			$_SESSION['message'] = "Official deleted successfully!";
+			$_SESSION['msg_type'] = "success";
+		} else {
+
+			$_SESSION['message'] = "Delete failed!";
+			$_SESSION['msg_type'] = "danger";
+		}
+
+		header("Location: ../page/captain.php?subpage=monitor");
+		exit();
+	}
+
 	function deleteTerm()
 	{
 		$id = $_GET['id'];
@@ -172,14 +229,16 @@ class ActiveCaptain
 	{
 		// Fixed: Pass $_POST data and use correct redirect
 		if ($this->captainModel->register($_POST)) {
+
 			$_SESSION['message'] = "Barangay Official registered successfully!";
 			$_SESSION['msg_type'] = "success";
 		} else {
+			
 			$_SESSION['message'] = "Failed to register official!";
 			$_SESSION['msg_type'] = "danger";
 		}
 
-		header("Location: captain.php?subpage=register"); // Fixed redirect
+		header("Location: ../page/captain.php?subpage=monitor"); // Fixed redirect
 		exit();
 	}
 }

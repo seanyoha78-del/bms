@@ -46,7 +46,7 @@ class Kagawad
 		include '../views/kagawad.php';
 	}
 
-	function program()
+	function project()
 	{
 		include '../views/kagawad.php';
 	}
@@ -81,19 +81,19 @@ class ActiveKagawad
 		$this->{$_GET['function']}();
 	}
 
-	function addProgram()
+	function addProject()
 	{
-		if ($this->kagawadModel->addProgram($_POST)) {
+		if ($this->kagawadModel->addProject($_POST)) {
 
-			$_SESSION['message'] = "Program added successfully!";
+			$_SESSION['message'] = "Project added successfully!";
 			$_SESSION['msg_type'] = "success";
 		} else {
 
-			$_SESSION['message'] = "Failed to add program!";
+			$_SESSION['message'] = "Failed to add Project!";
 			$_SESSION['msg_type'] = "danger";
 		}
 
-		header("Location: ../page/kagawad.php?subpage=program");
+		header("Location: ../page/kagawad.php?subpage=project");
 		exit();
 	}
 
@@ -150,7 +150,7 @@ class ActiveKagawad
 			$_SESSION['msg_type'] = "danger";
 		}
 
-		header("Location: ../page/kagawad.php?subpage=program");
+		header("Location: ../page/kagawad.php?subpage=project");
 		exit();
 	}
 

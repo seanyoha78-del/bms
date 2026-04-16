@@ -17,7 +17,15 @@ if (!isset($_SESSION['official_id'])) {
         // Captain allowed
         // page continues
 
-    } else if ($_SESSION['position'] === 'Kagawad') {
+    } else if ($_SESSION['position'] === 'Health') {
+
+    } else if ($_SESSION['position'] === 'Environment') {
+
+    } else if ($_SESSION['position'] === 'Education') {
+
+    } else if ($_SESSION['position'] === 'Infrastructure') {
+
+    } else if ($_SESSION['position'] === 'Peace') {
 
         // Kagawad allowed
         // page continues
@@ -32,7 +40,7 @@ if (!isset($_SESSION['official_id'])) {
         // Secretary allowed
         // page continues
 
-    } else if ($_SESSION['position'] === 'Sk kagawad') {
+    } else if ($_SESSION['position'] === 'SK') {
     } else {
 
         // Other roles not allowed
@@ -87,26 +95,82 @@ header("Pragma: no-cache");
                         <i class="fas fa-home me-2"></i> Dashboard
                     </a>
                 </li>
-                <li class="nav-item"><a class="nav-link <?= ($current == 'project') ? 'active' : '' ?>" href="../page/captain.php?subpage=program"><i class="fas fa-project-diagram me-2"></i> Projects</a></li>
                 <li class="nav-item"><a class="nav-link <?= ($current == 'monitor') ? 'active' : '' ?>" href="../page/captain.php?subpage=monitor"><i class="fas fa-users-cog me-2"></i> Staff Management</a></li>
-                <li class="nav-item"><a class="nav-link <?= ($current == 'approval') ? 'active' : '' ?>" href="../page/captain.php?subpage=approval"><i class="fas fa-file-signature me-2"></i> Approvals</a></li>
+                <!-- <li class="nav-item"><a class="nav-link <?= ($current == 'approval') ? 'active' : '' ?>" href="../page/captain.php?subpage=approval"><i class="fas fa-file-signature me-2"></i> Approvals</a></li> -->
                 <li class="nav-item"><a class="nav-link <?= ($current == 'resident') ? 'active' : '' ?>" href="../page/captain.php?subpage=resident"><i class="fas fa-address-book me-2"></i> Resident Records</a></li>
                 <li class="nav-item"><a class="nav-link <?= ($current == 'term') ? 'active' : '' ?>" href="../page/captain.php?subpage=term"><i class="fas fa-certificate me-2"></i>Term</a></li>
-                <li class="nav-item"><a class="nav-link <?= ($current == 'permit') ? 'active' : '' ?>" href="#"><i class="fas fa-file-alt me-2"></i> Permits</a></li>
-                <li class="nav-item"><a class="nav-link <?= ($current == 'finance') ? 'active' : '' ?>" href="../page/treasurer.php?subpage=finance"><i class="fas fa-file-invoice-dollar me-2"></i> Financial Reports</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-youth-visiting me-2"></i> Youth Programs</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-coins me-2"></i> SK Funds</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-gear me-2"></i> Settings</a></li>
+                <li class="nav-item"><a class="nav-link <?= ($current == 'finance') ? 'active' : '' ?>" href="../page/captain.php?subpage=finance"><i class="fas fa-file-invoice-dollar me-2"></i> Financial Reports</a></li>
+                <li class="nav-item"><a class="nav-link <?= ($current == 'funds') ? 'active' : '' ?>" href="../page/captain.php?subpage=funds"><i class="fas fa-coins me-2"></i> SK Funds</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-gear me-2"></i> Settings
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
+                        <li>
+                            <a class="dropdown-item" href="../page/captain.php?subpage=header">
+                                <i class="fas fa-user me-2"></i> Budget Header
+                            </a>
+                        </li>
+                        <!-- <li>
+                            <a class="dropdown-item" href="../page/captain.php?subpage=account">
+                                <i class="fas fa-lock me-2"></i> Account Settings
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="../page/captain.php?subpage=system">
+                                <i class="fas fa-cogs me-2"></i> System Settings
+                            </a>
+                        </li> -->
+                        <!-- <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="../logout.php">
+                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                            </a>
+                        </li> -->
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-project-diagram me-2"></i> Reports
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
+                        <li>
+                            <a class="dropdown-item" href="../page/captain.php?subpage=reports">
+                                <i class="fas fa-user me-2"></i> Committeess Reports
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="../page/captain.php?subpage=finance">
+                                <i class="fas fa-lock me-2"></i> Treasurer Reports
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="../page/captain.php?subpage=report">
+                                <i class="fas fa-cogs me-2"></i> SK Reports
+                            </a>
+                        </li>
+                        <!-- <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="../logout.php">
+                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                            </a>
+                        </li> -->
+                    </ul>
+                </li>
 
-            <?php } elseif ($role == "Kagawad") { ?>
+            <?php } elseif (in_array($role, ["Health", "Education", "Environment", "Infrastructure", "Peace"])) { ?>
                 <li class="nav-item">
                     <a class="nav-link <?= ($current == 'dashboard') ? 'active' : '' ?>" href="../page/kagawad.php?subpage=dashboard">
                         <i class="fas fa-home me-2"></i> Dashboard
                     </a>
                 </li>
-                <li class="nav-item"><a class="nav-link <?= ($current == 'concern') ? 'active' : '' ?>" href="../page/kagawad.php?subpage=concern"><i class="fas fa-bullhorn me-2"></i>Community Concerns</a></li>
+                <li class="nav-item"><a class="nav-link <?= ($current == 'concern') ? 'active' : '' ?>" href="../page/kagawad.php?subpage=concern"><i class="fas fa-bullhorn me-2"></i>Resident Concerns</a></li>
                 <li class="nav-item"><a class="nav-link <?= ($current == 'reports') ? 'active' : '' ?>" href="../page/kagawad.php?subpage=reports"><i class="fas fa-clipboard-list me-2"></i>Committee Reports</a></li>
-                <li class="nav-item"><a class="nav-link <?= ($current == 'program') ? 'active' : '' ?>" href="../page/kagawad.php?subpage=program"><i class="fas fa-bullhorn me-2"></i>Programs</a></li>
+                <li class="nav-item"><a class="nav-link <?= ($current == 'project') ? 'active' : '' ?>" href="../page/kagawad.php?subpage=project"><i class="fas fa-bullhorn me-2"></i>Projects</a></li>
 
             <?php } elseif ($role == "Secretary") { ?>
                 <li class="nav-item">
@@ -124,17 +188,18 @@ header("Pragma: no-cache");
                         <i class="fas fa-home me-2"></i> Dashboard
                     </a>
                 </li>
-                <li class="nav-item"><a class="nav-link <?= ($current == 'budget') ? 'active' : '' ?>" href="../page/treasurer.php?subpage=budget"><i class="fas fa-wallet me-2"></i> Budget Tracker</a></li>
+                <!-- <li class="nav-item"><a class="nav-link <?= ($current == 'budget') ? 'active' : '' ?>" href="../page/treasurer.php?subpage=budget"><i class="fas fa-wallet me-2"></i> Budget Tracker</a></li> -->
                 <li class="nav-item"><a class="nav-link <?= ($current == 'finance') ? 'active' : '' ?>" href="../page/treasurer.php?subpage=finance"><i class="fas fa-file-invoice-dollar me-2"></i> Financial Reports</a></li>
 
-            <?php } elseif ($role == "SK kagawad") { ?>
+            <?php } elseif ($role == "SK") { ?>
                 <li class="nav-item">
                     <a class="nav-link <?= ($current == 'dashboard') ? 'active' : '' ?>" href="../page/sk_kagawad.php?subpage=dashboard">
                         <i class="fas fa-home me-2"></i> Dashboard
                     </a>
                 </li>
-                <li class="nav-item"><a class="nav-link <?= ($current == 'program') ? 'active' : '' ?>" href="../page/sk_kagawad.php?subpage=program"><i class="fas fa-youth-visiting me-2"></i> Youth Programs</a></li>
+                <li class="nav-item"><a class="nav-link <?= ($current == 'program') ? 'active' : '' ?>" href="../page/sk_kagawad.php?subpage=program"><i class="fas fa-bullhorn me-2"></i> Youth Programs</a></li>
                 <li class="nav-item"><a class="nav-link <?= ($current == 'funds') ? 'active' : '' ?>" href="../page/sk_kagawad.php?subpage=funds"><i class="fas fa-coins me-2"></i> SK Funds</a></li>
+                <li class="nav-item"><a class="nav-link <?= ($current == 'report') ? 'active' : '' ?>" href="../page/sk_kagawad.php?subpage=report"><i class="fas fa-clipboard-list me-2"></i> Reports</a></li>
             <?php } ?>
             <li class="nav-item mt-5">
                 <a class="nav-link text-warning" href="../login/logout.php">

@@ -1,3 +1,178 @@
+<!-- SK FUND -->
+<div class="modal fade" id="addFund">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header bg-success text-white">
+                <h5>Add Fund Record</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form action="../page/sk_kagawad.php?function=addFund" method="POST">
+
+                <div class="modal-body">
+
+                    <div class="mb-2">
+                        <label>Fund Name</label>
+                        <input type="text" name="fund_name" class="form-control" required>
+                    </div>
+
+                    <div class="mb-2">
+                        <label>Allocated Amount</label>
+                        <input type="number" name="allocated_amount" class="form-control" required>
+                    </div>
+
+                    <div class="mb-2">
+                        <label>Date Released</label>
+                        <input type="date" name="date_released" class="form-control" required>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-success" name="addFund">Save</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- ADD SK PROGRAM MODAL -->
+<div class="modal fade" id="addProgram">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5>Add Youth Program</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="../page/sk_kagawad.php?function=addProgram" method="POST">
+                <div class="modal-body">
+                    <!-- PROGRAM INFO -->
+                    <div class="mb-2">
+                        <label>Program Name</label>
+                        <input type="text" name="program_name" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label>Description</label>
+                        <textarea name="program_description" class="form-control"></textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label>Date</label>
+                        <input type="date" name="program_date" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label>Budget</label>
+                        <input type="number" name="program_budget" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label>Select Fund</label>
+                        <select name="fund_id" class="form-select" required>
+
+                            <option value="">-- Select Fund --</option>
+
+                            <?php
+                            $funds = mysqli_query($conn, "SELECT * FROM sk_funds ORDER BY fund_name ASC");
+
+                            while ($fund = mysqli_fetch_assoc($funds)) {
+                            ?>
+                                <option value="<?= $fund['fund_id'] ?>">
+                                    <?= $fund['fund_name'] ?> (₱<?= number_format($fund['allocated_amount'], 2) ?>)
+                                </option>
+                            <?php } ?>
+
+                        </select>
+                    </div>
+                    <hr>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" name="addProgram">Save Program</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- add DOCUMENT -->
+<div class="modal fade" id="addDocument">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5>Add Document</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="../page/secretary.php?function=addDocument" method="POST">
+                <div class="modal-body">
+                    <label>Document Type</label>
+                    <input type="text" name="doc_type" class="form-control mb-2" required>
+
+                    <label>Name</label>
+                    <input type="text" name="name" class="form-control mb-2" required>
+
+                    <label>Purpose</label>
+                    <input type="text" name="purpose" class="form-control mb-2" required>
+                </div>
+                <div class="modal-footer">
+                    <button name="add" class="btn btn-warning">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ADD PROJECT -->
+<div class="modal fade" id="addProject">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5>Add Project</h5>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="../page/kagawad.php?function=addProject">
+                <div class="modal-body">
+                    <input type="text" name="project_name" class="form-control mb-2" placeholder="Project Name" required>
+                    <label>Start Date</label>
+                    <input type="date" name="start_date" class="form-control mb-2" required>
+                    <input type="number" name="budget" class="form-control mb-2" placeholder="Total Budget" required>
+                    <input type="number" name="labor_cost" class="form-control mb-2" placeholder="Labor Cost">
+                    <input type="number" name="material_cost" class="form-control mb-2" placeholder="Material Cost">
+
+                    <!-- CONNECT TO CONCERN -->
+                    <label>Select Concern (Optional)</label>
+                    <select name="concern_id" class="form-control mb-2">
+                        <option value="">No Concern (Optional)</option>
+                        <?php
+                        $concerns = mysqli_query($conn, "SELECT * FROM concern WHERE concern_status = 'Pending'");
+                        while ($c = mysqli_fetch_assoc($concerns)) {
+                        ?>
+                            <option value="<?= $c['concern_id'] ?>">
+                                <?= $c['concern_name'] ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+
+                    <!-- COMMITTEE -->
+                    <label>Committee</label>
+                    <select name="committees" class="form-control mb-2">
+                        <option value="Health">Health</option>
+                        <option value="Peace">Peace</option>
+                        <option value="Education">Education</option>
+                        <option value="Infrastructure">Infrastructure</option>
+                        <option value="Environment">Environment</option>
+                    </select>
+
+                    <textarea name="description" class="form-control" placeholder="Description"></textarea>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-success">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- ADD CONCERN MODAL -->
 <div class="modal fade" id="addConcern">
     <div class="modal-dialog">
@@ -9,6 +184,8 @@
             <form action="../page/kagawad.php?function=addConcern" method="POST">
                 <div class="modal-body">
                     <input type="text" name="concern_name" class="form-control" placeholder="Concern Description">
+                    <br>
+                    <textarea name="concern_description" class="form-control" placeholder="Description"></textarea>
                 </div>
 
                 <div class="modal-footer">
@@ -206,8 +383,37 @@
 </div>
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const labels = <?= json_encode(array_keys($dataMap)) ?>;
+    const data = <?= json_encode(array_values($dataMap)) ?>;
 
+    new Chart(document.getElementById('concernChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Current Term',
+                data: data,
+                fill: true,
+                tension: 0.4,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+</script>
 <script>
     // Password confirmation
     document.addEventListener('DOMContentLoaded', function() {

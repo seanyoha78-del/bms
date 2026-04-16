@@ -111,4 +111,21 @@ class ActiveSecretary
 		header("Location: ../page/secretary.php?subpage=blotter");
 		exit();
 	}
+
+	function addDocument()
+{
+    if ($this->secretaryModel->addDocument($_POST)) {
+
+        $_SESSION['message'] = "Document generated successfully!";
+        $_SESSION['msg_type'] = "success";
+
+    } else {
+
+        $_SESSION['message'] = "Failed to generate document!";
+        $_SESSION['msg_type'] = "danger";
+    }
+
+    header("Location: ../page/secretary.php?subpage=certificates");
+    exit();
+}
 }

@@ -17,8 +17,6 @@ $currentTerm = mysqli_fetch_assoc($termQuery);
 $residentsResult = mysqli_query($conn, "SELECT resident_id, first_name, last_name FROM resident ORDER BY last_name, first_name");
 ?>
 
-<!-- Your existing code continues... -->
-
 
 <?php if ($subpage == "dashboard") { ?>
     <div class="main-content">
@@ -152,7 +150,7 @@ $residentsResult = mysqli_query($conn, "SELECT resident_id, first_name, last_nam
                             <tr>
                                 <th style="width: 100px;">No.</th>
                                 <th>Name</th>
-                                <th style="width: 200px;">Position</th>
+                                <th style="width: 300px;">Position</th>
                                 <th style="width: 220px;">Email</th>
                                 <th style="width: 320px;">Action</th>
                             </tr>
@@ -224,7 +222,7 @@ $residentsResult = mysqli_query($conn, "SELECT resident_id, first_name, last_nam
                                                     <h5 class="modal-title">Update Position</h5>
                                                     <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                                 </div>
-                                                <form action="../page/captain.php?function=updateOfficial" method="POST">
+                                                <form action="../page/captain.php?function=updatePosition" method="POST">
                                                     <div class="modal-body">
                                                         <input type="hidden" name="official_id" value="<?= $row['official_id']; ?>">
                                                         <input type="hidden" name="resident_id" value="<?= $row['resident_id']; ?>">
@@ -235,7 +233,13 @@ $residentsResult = mysqli_query($conn, "SELECT resident_id, first_name, last_nam
                                                                 <option value="Captain" <?= $row['position'] == 'Captain' ? 'selected' : ''; ?>>Captain</option>
                                                                 <option value="Secretary" <?= $row['position'] == 'Secretary' ? 'selected' : ''; ?>>Secretary</option>
                                                                 <option value="Treasurer" <?= $row['position'] == 'Treasurer' ? 'selected' : ''; ?>>Treasurer</option>
-                                                                <option value="SK kagawad" <?= $row['position'] == 'SK kagawad' ? 'selected' : ''; ?>>SK Kagawad</option>
+                                                                <option value="SK" <?= $row['position'] == 'SK' ? 'selected' : ''; ?>>SK Kagawad</option>
+                                                                <option value="Health" <?= $row['position'] == 'Health' ? 'selected' : ''; ?>>Health committee</option>
+                                                                <option value="Peace" <?= $row['position'] == 'Peace' ? 'selected' : ''; ?>>Peace & Orded committee</option>
+                                                                <option value="Education" <?= $row['position'] == 'Education' ? 'selected' : ''; ?>>Education committee</option>
+                                                                <option value="Infrastructure" <?= $row['position'] == 'Infrastructure' ? 'selected' : ''; ?>>Infrastructure Committee</option>
+                                                                <option value="Environment" <?= $row['position'] == 'Environment' ? 'selected' : ''; ?>>Environment Committee</option>
+                                                                
                                                             </select>
                                                         </div>
                                                         <div class="mb-3">
@@ -341,13 +345,13 @@ $residentsResult = mysqli_query($conn, "SELECT resident_id, first_name, last_nam
                                     </td>
 
                                     <td>
-                                        <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#updateTerm<?= $row['term_id'] ?>">
-                                            Update
+                                        <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#updateTerm<?= $row['term_id'] ?>">
+                                           <i class="fas fa-edit"></i> Update
                                         </button>
                                         <a href="../page/captain.php?function=deleteTerm&id=<?= $row['term_id'] ?>"
-                                            class="btn btn-sm btn-danger"
+                                            class="btn btn-sm btn-outline-danger"
                                             onclick="return confirm('Are you sure you want to delete this Term?')">
-                                            Delete
+                                            <i class="fas fa-trash"></i>Delete
                                         </a>
                                     </td>
                                 </tr>
@@ -438,10 +442,14 @@ $residentsResult = mysqli_query($conn, "SELECT resident_id, first_name, last_nam
                             <select name="position" class="form-control" id="position" required>
                                 <option value="">Select Position</option>
                                 <option>Captain</option>
-                                <option>Kagawad</option>
                                 <option>Secretary</option>
                                 <option>Treasurer</option>
-                                <option>SK kagawad</option>
+                                <option>SK</option>
+                                <option>Heatlh</option>
+                                <option>Peace</option>
+                                <option>Education</option>
+                                <option>Infrastructure</option>
+                                <option>Invironment</option>
                             </select>
                         </div>
 
@@ -599,5 +607,79 @@ $residentsResult = mysqli_query($conn, "SELECT resident_id, first_name, last_nam
                     <div class="alert alert-warning">Official not found.</div>
             <?php endif;
                         } ?>
-        <?php } ?>
-        <?php include '../nav/footer.php'; ?>
+
+        <?php } elseif ($subpage == "header") { ?>
+            <div class="containers mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3>Edit Budget Information</h3>
+                </div>
+                <hr>
+                <div class="container mt-5" style="margin-left: 30%;">
+                    <div class="card-box" style="width: 800px;">
+                        <?php
+                        // FETCH DATA
+                        $result = mysqli_query($conn, "SELECT * FROM voucher WHERE id = 1");
+
+                        if (mysqli_num_rows($result) > 0) {
+                            $row = mysqli_fetch_assoc($result);
+                        }
+
+                        // UPDATE DATA
+                        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+                            $barangay = mysqli_real_escape_string($conn, $_POST['barangay']);
+                            $municipality = mysqli_real_escape_string($conn, $_POST['municipality']);
+                            $province = mysqli_real_escape_string($conn, $_POST['province']);
+                            $address = mysqli_real_escape_string($conn, $_POST['address']);
+
+                            $update = "UPDATE voucher SET 
+                                barangay='$barangay',
+                                municipality='$municipality',
+                                province='$province',
+                                address='$address'
+                                WHERE id = 1";
+
+                            if (mysqli_query($conn, $update)) {
+                                echo "<script>alert('Updated successfully!'); window.location='';</script>";
+                            } else {
+                                echo "<script>alert('Update failed!');</script>";
+                            }
+                        }
+                        ?>
+                        <!-- HEADER -->
+                        <div style="text-align: center;">
+                            <h4><i class="fas  text-primary me-2"></i> Budget Information</h4>
+                        </div>
+                        <hr>
+                        <form action="" method="POST">
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label"><strong>Barangay:</strong></label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="barangay" class="form-control" value="<?= htmlspecialchars($row['barangay'] ?? ''); ?>">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label"><strong>Municipality:</strong></label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="municipality" class="form-control" value="<?= htmlspecialchars($row['municipality']); ?>">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label"><strong>Province:</strong></label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="province" class="form-control" value="<?= htmlspecialchars($row['province'] ?? ''); ?>">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label"><strong>address:</strong></label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="address" class="form-control" value="<?= htmlspecialchars($row['address'] ?? ''); ?>">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-save"></i> Save Changes
+                            </button>
+                        </form>
+                    </div>
+                <?php } ?>
+                <?php include '../nav/footer.php'; ?>

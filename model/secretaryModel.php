@@ -100,6 +100,23 @@ class secretaryModel
         ]);
     }
 
+    function addDocument($data)
+    {
+        $sql = "INSERT INTO document 
+        (doc_official_id, doc_type, name, purpose)
+        VALUES 
+        (:official_id, :doc_type, :name, :purpose)";
+
+        $stmt = $this->conn->prepare($sql);
+
+        return $stmt->execute([
+            'official_id' => $_SESSION['official_id'],
+            'doc_type' => $data['doc_type'] ?? '',
+            'name' => $data['name'] ?? '',
+            'purpose' => $data['purpose'] ?? ''
+        ]);
+    }
+
     // LOGIN CHECK
     function getEmail($email)
     {

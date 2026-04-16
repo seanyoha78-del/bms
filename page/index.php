@@ -41,12 +41,28 @@ if (isset($_SESSION['official_id']) && $page['subpage'] == 'login') {
             header('Location: ../page/treasurer.php');
             break;
 
-        case 'Kagawad':
+        case 'Health':
             header('Location: ../page/kagawad.php');
             break;
 
-        case 'SK kagawad':
-            header('Location: ../page/sk_kagawad.php?subpage=dashboard');
+        case 'Environment':
+            header('Location: ../page/kagawad.php');
+            break;
+
+        case 'Education':
+            header('Location: ../page/kagawad.php');
+            break;
+
+        case 'Infrastructure':
+            header('Location: ../page/kagawad.php');
+            break;
+
+        case 'Peace':
+            header('Location: ../page/kagawad.php');
+            break;
+
+        case 'SK':
+            header('Location: ../page/sk_kagawad.php');
             break;
     }
 
@@ -83,7 +99,7 @@ class Index
         header("Cache-Control: post-check=0, pre-check=0", false);
         header("Pragma: no-cache");
 
-        include './login/login.php';
+        include '../login/login.php';
     }
 
     function register()
@@ -170,12 +186,24 @@ class ActiveIndex
                     header('Location: ../page/secretary.php?subpage=dashboard');
                     break;
                 case 'Treasurer':
-                    header('Location: ../page/treasurer.php');
+                    header('Location: ../page/treasurer.php?subpage=dashboard');
                     break;
-                case 'Kagawad':
+                case 'Health':
                     header('Location: ../page/kagawad.php?subpage=dashboard');
                     break;
-                case 'SK kagawad':
+                case 'Peace':
+                    header('Location: ../page/kagawad.php?subpage=dashboard');
+                    break;
+                case 'Infrastructure':
+                    header('Location: ../page/kagawad.php?subpage=dashboard');
+                    break;
+                case 'Education':
+                    header('Location: ../page/kagawad.php?subpage=dashboard');
+                    break;
+                case 'Environment':
+                    header('Location: ../page/kagawad.php?subpage=dashboard');
+                    break;
+                case 'SK':
                     header('Location: ../page/sk_kagawad.php?subpage=dashboard');
                     break;
             }

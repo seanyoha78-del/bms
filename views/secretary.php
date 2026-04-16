@@ -4,6 +4,11 @@ include '../nav/header.php';
 $role = $_SESSION['position'];
 $subpage = isset($_GET['subpage']) ? $_GET['subpage'] : 'dashboard';
 
+$conn = mysqli_connect("localhost", "root", "", "barangay_system");
+
+if (!$conn) {
+    die("Database connection failed" . mysqli_connect_error());
+}
 
 $name = $_POST['name'] ?? '';
 $purpose = $_POST['purpose'] ?? '';
@@ -12,10 +17,54 @@ $date = date("F d, Y");
 $bdy = $_POST['birthday'] ?? '';
 $nameB = $_POST['business'] ?? '';
 
-$conn = mysqli_connect("localhost", "root", "", "barangay_system");
+$termQuery = mysqli_query($conn, "SELECT * FROM term WHERE status='Current' LIMIT 1");
+$currentTerm = mysqli_fetch_assoc($termQuery);
 
-if (!$conn) {
-    die("Database connection failed" . mysqli_connect_error());
+$start = $currentTerm['start_year'];
+$end   = $currentTerm['end_year'];
+// Blotter count
+$blotterQuery = mysqli_query($conn, "
+    SELECT COUNT(*) AS total 
+    FROM blotter 
+    WHERE bltr_date_created BETWEEN '$start' AND '$end'
+");
+$blotterCount = mysqli_fetch_assoc($blotterQuery)['total'];
+
+$docQuery = mysqli_query($conn, "
+    SELECT COUNT(*) AS total 
+    FROM document 
+    WHERE date_issued BETWEEN '$start' AND '$end'
+");
+$documentCount = mysqli_fetch_assoc($docQuery)['total'];
+
+$residentQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM resident");
+$residentrow = mysqli_fetch_assoc($residentQuery);
+$residentcount = $residentrow['total'];
+
+// Registered voters count
+$voterQuery = mysqli_query($conn, "
+    SELECT COUNT(*) AS total 
+    FROM resident 
+    WHERE voter_status = 'register'
+");
+$voterRow = mysqli_fetch_assoc($voterQuery);
+$voterCount = $voterRow['total'];
+
+$query = mysqli_query($conn, "
+    SELECT 
+        DAYNAME(bltr_date_created) as day,
+        COUNT(*) as total
+    FROM blotter
+    WHERE bltr_date_created BETWEEN '$start' AND '$end'
+    GROUP BY DAYOFWEEK(bltr_date_created)
+");
+
+// Ensure all days exist
+$days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+$dataMap = array_fill_keys($days, 0);
+
+while ($row = mysqli_fetch_assoc($query)) {
+    $dataMap[$row['day']] = $row['total'];
 }
 ?>
 <?php if ($subpage == "dashboard") { ?>
@@ -31,64 +80,50 @@ if (!$conn) {
             </div>
         </div>
 
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="card p-3 shadow-sm text-center">
-                    <i class="fas fa-id-card fa-2x text-blue mb-2"></i>
-                    <h4 class="mb-0">125</h4>
-                    <small class="text-muted">Pending Clearances</small>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card p-3 shadow-sm text-center">
-                    <i class="fas fa-file-contract fa-2x text-blue mb-2"></i>
-                    <h4 class="mb-0">42</h4>
-                    <small class="text-muted">Business Permits</small>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card p-3 shadow-sm text-center">
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <div class="card card-stats shadow-sm p-3 text-center">
                     <i class="fas fa-users fa-2x text-blue mb-2"></i>
-                    <h4 class="mb-0">892</h4>
+                    <h4 class="mb-0"><?= $blotterCount ?></h4>
+                    <small class="text-muted">Blotter</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-stats shadow-sm p-3 text-center">
+                    <i class="fas fa-file-contract fa-2x text-blue mb-2"></i>
+                    <h4 class="mb-0"><?= $documentCount ?></h4>
+                    <small class="text-muted">Document Release</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-stats shadow-sm p-3 text-center">
+                    <i class="fas fa-users fa-2x text-blue mb-2"></i>
+                    <h4 class="mb-0"><?= $voterCount ?></h4>
                     <small class="text-muted">Registered Voters</small>
                 </div>
             </div>
-        </div>
-
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-0">
-                <div class="p-3 border-bottom d-flex justify-content-between">
-                    <h5 class="text-blue">Resident Directory</h5>
-                    <input type="text" id="search" class="form-control form-control-sm w-25" placeholder="Search resident...">
+            <div class="col-md-3">
+                <div class="card card-stats shadow-sm p-3 text-center">
+                    <i class="fas fa-users fa-2x text-blue mb-2"></i>
+                    <h4 class="mb-0"><?= $residentcount ?></h4>
+                    <small class="text-muted">Residents</small>
                 </div>
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Name</th>
-                            <th>Address</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Dela Cruz, Juan</td>
-                            <td>45 Blue St. Zone 2</td>
-                            <td><span class="badge bg-success">Active</span></td>
-                            <td><button class="btn btn-sm btn-light border"><i class="fas fa-edit"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td>Santos, Ana</td>
-                            <td>12 Green Rd. Zone 1</td>
-                            <td><span class="badge bg-success">Active</span></td>
-                            <td><button class="btn btn-sm btn-light border"><i class="fas fa-edit"></i></button></td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
-    </div>
 
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Blotter Overview</h5>
+                <small class="text-muted">
+                    <?= date('F d, Y', strtotime($start)) ?> -
+                    <?= date('F d, Y', strtotime($end)) ?>
+                </small>
+            </div>
+
+            <div class="card-body">
+                <canvas id="concernChart" height="100"></canvas>
+            </div>
+        </div>
 <?php } elseif ($subpage == "resident") { ?>
     <div class="containers mt-4">
 
@@ -96,9 +131,9 @@ if (!$conn) {
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3>Resident</h3>
             <?php if ($_SESSION['position'] == 'Secretary'): ?>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModel">
-                + Add Resident
-            </button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModel">
+                    + Add Resident
+                </button>
             <?php endif; ?>
         </div>
         <hr>
@@ -192,6 +227,32 @@ if (!$conn) {
         </div>
 
     <?php } elseif ($subpage == "blotter") { ?>
+        <?php
+        $termQuery = mysqli_query($conn, "SELECT * FROM term WHERE status='Current' LIMIT 1");
+        $currentTerm = mysqli_fetch_assoc($termQuery);
+
+        // ✅ FORMAT START DATE
+        $startDate = !empty($currentTerm['start_year'])
+            ? date('F d, Y', strtotime($currentTerm['start_year']))
+            : 'N/A';
+
+        // ✅ FORMAT END DATE
+        $endDate = !empty($currentTerm['end_year'])
+            ? date('F d, Y', strtotime($currentTerm['end_year']))
+            : 'N/A';
+
+        // ✅ FINAL DISPLAY
+        $termRange = $startDate . " - " . $endDate;
+
+        // Get concerns created in the same year as current term
+        $result = mysqli_query($conn, "
+            SELECT * 
+            FROM blotter 
+            WHERE bltr_date_created BETWEEN '{$currentTerm['start_year']}' 
+            AND '{$currentTerm['end_year']}'
+            ORDER BY blotter_id DESC
+        ");
+        ?>
         <div class="containers mt-4">
             <!-- HEADER -->
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -203,11 +264,6 @@ if (!$conn) {
             <hr>
             <div class="container mt-4">
                 <div class="card-box" style="width: 1500px;">
-                    <?php
-                    $result = mysqli_query($conn, "SELECT * FROM blotter ORDER BY blotter_id DESC");
-                    if (mysqli_num_rows($result) > 0);
-                    $counter = 1;
-                    ?>
                     <!-- HEADER -->
                     <div class="d-flex justify-content-between mb-3">
                         <h4>🚨 Blotter Records</h4>
@@ -216,6 +272,17 @@ if (!$conn) {
                         </button>
                     </div>
                     <hr>
+                    <?php if (!empty($_SESSION['message'])): ?>
+                        <div class="alert alert-<?= $_SESSION['msg_type'] ?> alert-dismissible fade show" role="alert">
+                            <?= $_SESSION['message'] ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+
+                        <?php
+                        unset($_SESSION['message']);
+                        unset($_SESSION['msg_type']);
+                        ?>
+                    <?php endif; ?>
                     <!-- TABLE -->
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover">
@@ -232,47 +299,54 @@ if (!$conn) {
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php
-                                while ($row = mysqli_fetch_assoc($result)) : ?>
-                                    <tr>
-                                        <td><?= $counter++ ?></td>
-                                        <td><?= $row['bltr_incident_date'] ?></td>
-                                        <td><?= $row['bltr_incident_time'] ?></td>
-                                        <td><?= $row['bltr_incident_location'] ?></td>
-                                        <td><?= $row['incident_type'] ?></td>
-                                        <td><?= $row['description'] ?></td>
-                                        <td><?= $row['action_taken'] ?></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#views">View</button>
-                                            <a href="?delete=<?= $counter++ ?>" class="btn btn-sm btn-danger">Delete</a>
-                                        </td>
-                                    </tr>
-                                    <!-- VIEW MODAL -->
-                                    <div class="modal fade" id="views">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-danger text-white">
-                                                    <h5>Blotter Details</h5>
-                                                    <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p><strong>Date:</strong> <?= $row['bltr_incident_date'] ?></p>
-                                                    <p><strong>Time:</strong> <?= $row['bltr_incident_time'] ?></p>
-                                                    <p><strong>Location:</strong> <?= $row['bltr_incident_location'] ?></p>
-                                                    <p><strong>Complainant Name:</strong> <?= $row['bltr_compl_name'] ?></p>
-                                                    <p><strong>Complainant Age:</strong> <?= $row['bltr_compl_age'] ?></p>
-                                                    <p><strong>Complainant Address:</strong> <?= $row['bltr_compl_address'] ?></p>
-                                                    <p><strong>Respondent Name:</strong> <?= $row['bltr_resp_name'] ?></p>
-                                                    <p><strong>Respondent Age:</strong> <?= $row['bltr_resp_age'] ?></p>
-                                                    <p><strong>Respondent Address:</strong> <?= $row['bltr_resp_address'] ?></p>
-                                                    <p><strong>Incident Type:</strong> <?= $row['incident_type'] ?></p>
-                                                    <p><strong>Description:</strong> <?= $row['description'] ?></p>
-                                                    <p><strong>Action Taken:</strong> <?= $row['action_taken'] ?></p>
+                                <?php if (mysqli_num_rows($result) > 0): $counter = 1; ?>
+                                    <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                                        <tr style="text-align: center;">
+                                            <td><?= $counter++ ?></td>
+                                            <td><?= $row['bltr_incident_date'] ?></td>
+                                            <td><?= $row['bltr_incident_time'] ?></td>
+                                            <td><?= $row['bltr_incident_location'] ?></td>
+                                            <td><?= $row['incident_type'] ?></td>
+                                            <td><?= $row['description'] ?></td>
+                                            <td><?= $row['action_taken'] ?></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#views"><i class="fas fa-eye"></i> View</button>
+                                                <a href="?delete=<?= $counter++ ?>" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i> Delete</a>
+                                            </td>
+                                        </tr>
+                                        <!-- VIEW MODAL -->
+                                        <div class="modal fade" id="views">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-danger text-white">
+                                                        <h5>Blotter Details</h5>
+                                                        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><strong>Date:</strong> <?= $row['bltr_incident_date'] ?></p>
+                                                        <p><strong>Time:</strong> <?= $row['bltr_incident_time'] ?></p>
+                                                        <p><strong>Location:</strong> <?= $row['bltr_incident_location'] ?></p>
+                                                        <p><strong>Complainant Name:</strong> <?= $row['bltr_compl_name'] ?></p>
+                                                        <p><strong>Complainant Age:</strong> <?= $row['bltr_compl_age'] ?></p>
+                                                        <p><strong>Complainant Address:</strong> <?= $row['bltr_compl_address'] ?></p>
+                                                        <p><strong>Respondent Name:</strong> <?= $row['bltr_resp_name'] ?></p>
+                                                        <p><strong>Respondent Age:</strong> <?= $row['bltr_resp_age'] ?></p>
+                                                        <p><strong>Respondent Address:</strong> <?= $row['bltr_resp_address'] ?></p>
+                                                        <p><strong>Incident Type:</strong> <?= $row['incident_type'] ?></p>
+                                                        <p><strong>Description:</strong> <?= $row['description'] ?></p>
+                                                        <p><strong>Action Taken:</strong> <?= $row['action_taken'] ?></p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                <?php endwhile; ?>
+                                    <?php endwhile; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="7" style="text-align: center;">
+                                            No programs found for the current term (<?= $termRange ?>).
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -307,7 +381,7 @@ if (!$conn) {
                     </ul>
                     <div class="tab-content mt-4">
                         <!-- RESIDENCY -->
-                        <div class="tab-pane fade show active" id="residency">
+                        <div class="tab-pane fade" id="residency">
 
                             <div class="card p-3 mb-3 no-print">
                                 <form method="POST">
@@ -356,6 +430,10 @@ if (!$conn) {
                     </div>
                     <!-- GENERATED DOCUMENT -->
                     <?php if ($type): ?>
+                        <p><i>Add Record After Printing.</i></p>
+                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#addDocument">
+                            Add Record
+                        </button>
                         <div class="text-end mb-3 no-print">
                             <button onclick="printDiv('printableArea')" class="btn btn-success">Print</button>
                         </div>

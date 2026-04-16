@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 //model
 include '../model/kagawadModel.php';
 
@@ -78,10 +78,17 @@ class ActiveTreasurer
 	function addBudget()
 	{
 		if ($this->kagawadModel->addBudget($_POST)) {
-			echo "<script>alert('Added Successfully'); window.location='../page/treasurer.php?subpage=finance';</script>";
+
+			$_SESSION['message'] = "Budget added successfully!";
+			$_SESSION['msg_type'] = "success";
 		} else {
-			echo "Error adding resident";
+
+			$_SESSION['message'] = "Failed to add Budget!";
+			$_SESSION['msg_type'] = "danger";
 		}
+
+		header("Location: ../page/treasurer.php?subpage=finance");
+		exit();
 	}
 
 	function viewBudget()
@@ -99,18 +106,20 @@ class ActiveTreasurer
 
 	function updateStatus()
 	{
-		$id = $_POST['id'] ?? null;
-		$status = $_POST['budget_status'] ?? null;
-
-		if (!$id || !$status) {
-			die("Invalid data");
-		}
+		$id = $_POST['id'];
+		$status = $_POST['budget_status'];
 
 		if ($this->kagawadModel->updateStatus($id, $status)) {
-			header("Location: ../page/treasurer.php?subpage=finance");
-			exit();
+
+			$_SESSION['message'] = "Status updated successfully!";
+			$_SESSION['msg_type'] = "success";
 		} else {
-			echo "Failed to update status";
+
+			$_SESSION['message'] = "Failed to update status!";
+			$_SESSION['msg_type'] = "danger";
 		}
+
+		header("Location: ../page/treasurer.php?subpage=finance");
+		exit();
 	}
 }

@@ -14,22 +14,27 @@ class kagawadModel
         }
     }
 
-    function addProgram($data)
+    function addProject($data)
     {
         $sql = "INSERT INTO project 
-        (project_name, description, start_date, end_date, assigned_official_id, concern_id)
-        VALUES 
-        (:project_name, :description, :start_date, :end_date, :official_id, :concern_id)";
+    (project_name, description, start_date, budget, labor_cost, material_cost, assigned_official_id, concern_id, committees)
+    VALUES 
+    (:project_name, :description, :start_date, :budget, :labor_cost, :material_cost, :official_id, :concern_id, :committees)";
 
         $stmt = $this->conn->prepare($sql);
+
+        $concern_id = !empty($data['concern_id']) ? $data['concern_id'] : null;
 
         return $stmt->execute([
             ':project_name' => $data['project_name'] ?? '',
             ':description' => $data['description'] ?? '',
             ':start_date' => $data['start_date'] ?? '',
-            ':end_date' => $data['end_date'] ?? '',
-            ':official_id' => $_SESSION['official_id'] ?? '',
-            ':concern_id' => $data['concern_id'] ?? null   // ✅ new field
+            ':budget' => $data['budget'] ?? 0,
+            ':labor_cost' => $data['labor_cost'] ?? 0,
+            ':material_cost' => $data['material_cost'] ?? 0,
+            ':official_id' => $_SESSION['official_id'] ?? null,
+            ':concern_id' => $concern_id,
+            ':committees' => $data['committees'] ?? ''
         ]);
     }
 
@@ -53,18 +58,18 @@ class kagawadModel
         }
 
         $sql = "INSERT INTO budget 
-        (budget_id, budget_official_id, budget_date, budget_payee, budget_employee_no, budget_fund, budget_tin, budget_particulars, 
+        (project_id, budget_official_id, budget_date, budget_payee, budget_employee_no, budget_fund, budget_tin, budget_particulars, 
         budget_amount, budget_cert_a_name, budget_cert_a_date, budget_cert_b_name, budget_cert_date, budget_cert_c_name, budget_cert_cdate, 
         budget_account, budget_account_code, budget_debit, budget_credit)
         VALUES 
-        (:budget_id, :official_id, :budget_date, :budget_payee, :budget_employee_no, :budget_fund, :budget_tin, :budget_particulars,
+        (:project_id, :official_id, :budget_date, :budget_payee, :budget_employee_no, :budget_fund, :budget_tin, :budget_particulars,
         :budget_amount, :budget_cert_a_name, :budget_cert_a_date, :budget_cert_b_name, :budget_cert_date, :budget_cert_c_name, :budget_cert_cdate,
         :budget_account, :budget_account_code, :budget_debit, :budget_credit)";
 
         $stmt = $this->conn->prepare($sql);
 
         return $stmt->execute([
-            ':budget_id' => $data['project_id'],           // ✅ link to existing project
+            ':project_id' => $data['project_id'],           // ✅ link to existing project
             ':official_id' => $official_id,
             ':budget_date' => $data['budget_date'] ?? null,
             ':budget_payee' => $data['budget_payee'] ?? null,
@@ -117,15 +122,16 @@ class kagawadModel
         }
 
         $sql = "INSERT INTO concern 
-            (cnrn_official_id, concern_name)
+            (cnrn_official_id, concern_name, concern_description)
             VALUES 
-            (:official_id, :concern_name)";
+            (:official_id, :concern_name, :concern_description)";
 
         $stmt = $this->conn->prepare($sql);
 
         return $stmt->execute([
             ':official_id' => $official_id,
-            ':concern_name' => $data['concern_name'] ?? ''
+            ':concern_name' => $data['concern_name'] ?? '',
+            ':concern_description' => $data['concern_description'] ?? ''
         ]);
     }
 

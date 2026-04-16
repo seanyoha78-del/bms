@@ -1,4 +1,8 @@
 <?php include '../nav/header.php' ?>
+<?php
+// CONNECT DATABASE (if not yet included)
+$conn = mysqli_connect("localhost", "root", "", "barangay_system");
+?>
 
 <div class="containers mt-4">
         <!-- HEADER -->
@@ -10,7 +14,7 @@
         </div>
         <hr>
         <div class="container mt-4">
-            <div class="card-box">
+            <div class="card-box" style="width: 1500px;">
                 <!-- HEADER -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4>📊 Budget Management</h4>
@@ -38,7 +42,7 @@
                             <tr>
                                 <td colspan="2">Address: <b>BRGY. HINDANG</b></td>
                                 <td>TIN: <b><?= htmlspecialchars($budget['budget_tin']) ?></b></td>
-                                <td>Amount: <b>₱ <?= htmlspecialchars($budget['budget_amount']) ?></b></td>
+                                <td>Amount: <b>₱ <?= number_format($budget['budget_amount'], 2) ?></b></td>
                             </tr>
                         </table>
                         <table class="table table-bordereds">
@@ -48,7 +52,7 @@
                             </tr>
                             <tr>
                                 <td><?= htmlspecialchars($budget['budget_particulars']) ?></td>
-                                <td>₱ <?= htmlspecialchars($budget['budget_amount']) ?></td>
+                                <td>₱ <?= number_format($budget['budget_amount'], 2) ?></td>
                             </tr>
                             <tr>
                                 <td>Amount in words: <b></b></td>
@@ -96,30 +100,17 @@
                             <tr>
                                 <td>ADVANCES</td>
                                 <td><?= htmlspecialchars($budget['budget_account_code']) ?></td>
-                                <td><?= htmlspecialchars($budget['budget_debit']) ?></td>
+                                <td><?= number_format($budget['budget_debit'], 2) ?></td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td>Cash in Bank - LCCA</td>
                                 <td>1-01-02-010</td>
                                 <td></td>
-                                <td><?= htmlspecialchars($budget['budget_credit']) ?></td>
+                                <td><?= number_format($budget['budget_credit'], 2) ?></td>
                                 </td>
                             </tr>
                         </table>
-                        <br>
-                        <div class="row text-center">
-                            <div class="col">
-                                Prepared by:<br><br>
-                                <b>LIZA V. ANTOC</b><br>
-                                Barangay Bookkeeper
-                            </div>
-                            <div class="col">
-                                Approved by:<br><br>
-                                <b>IMELDA R. ESCALA</b><br>
-                                Municipal Accountant
-                            </div>
-                        </div>
                     </div>
                 <?php endif; ?>
             </div>
